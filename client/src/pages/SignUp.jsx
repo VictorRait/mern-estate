@@ -27,11 +27,12 @@ function SignUp() {
 			if (data.success === false) {
 				setError(data.message);
 				setIsLoading(false);
-				navigate("/sign-in");
+
 				return;
 			}
 			setIsLoading(false);
 			setError(null);
+			navigate("/sign-in");
 			console.log(data);
 		} catch (error) {
 			setIsLoading(false);
