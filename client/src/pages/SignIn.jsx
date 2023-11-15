@@ -7,6 +7,7 @@ import {
 	signInSuccess,
 	signInFailure,
 } from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 function SignIn() {
 	const navigate = useNavigate();
 	const [formData, setFormData] = useState({});
@@ -69,6 +70,7 @@ function SignIn() {
 					className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
 					{isLoading ? "Loading..." : "Sign In"}
 				</button>
+				<OAuth />
 			</form>
 			<div className="flex gap-2 mt-5">
 				<p>{"Don't have an account?"}</p>
@@ -76,6 +78,7 @@ function SignIn() {
 					<span className="text-blue-700">Sign up</span>
 				</Link>
 			</div>
+
 			{error && <p className="text-red-500 mt-5">{error}</p>}
 		</div>
 	);
