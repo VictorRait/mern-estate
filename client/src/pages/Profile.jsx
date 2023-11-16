@@ -13,6 +13,8 @@ import {
 	updateUserStart,
 	updateUserFailure,
 	updateUserSuccess,
+	deleteUserFailure,
+	deleteUserSuccess,
 } from "../redux/user/userSlice";
 import {useDispatch} from "react-redux";
 
@@ -26,8 +28,7 @@ function Profile() {
 	const [formData, setFormData] = useState({});
 	const [previousFile, setPreviousFile] = useState(undefined);
 	const [updateSuccess, setUpdateSuccess] = useState(false);
-	console.log(file);
-	console.log(formData.avatar);
+
 	// fire base storage
 	// allow read; allow write: if request.resource.size < 2 * 1024 * 1024 && request.resource.contentType.matches('image/.*')
 	useEffect(() => {
@@ -84,7 +85,7 @@ function Profile() {
 		e.preventDefault();
 		try {
 			dispatch(updateUserStart());
-			const res = await fetch(`api/user/update/${currentUser._id}`, {
+			const res = await fetch(`api/user/update/${currentUser?._id}`, {
 				method: "POST",
 				headers: {"Content-Type": "application/json"},
 				body: JSON.stringify(formData),
@@ -100,13 +101,27 @@ function Profile() {
 			dispatch(updateUserFailure(error.message));
 		}
 	}
+	async function handleDeleteUser() {
+		try {
+			const res = await fetch(`api/user/delete/${currentUser._id}`, {
+				method: "DELETE",
+			});
+			const data = await res.json();
+			if (data.success === false) {
+				dispatch(deleteUserFailure());
+			}
+			dispatch(deleteUserSuccess(data));
+		} catch (error) {
+			dispatch(deleteUserFailure(error.message));
+		}
+	}
 	return (
 		<div className="p-3 max-w-lg mx-auto">
 			<h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
 			<form className="flex flex-col gap-4" onSubmit={handleSubmit}>
 				<img
 					onClick={() => fileRef.current.click()}
-					src={formData.avatar || currentUser.avatar}
+					src={formData.avatar || currentUser?.avatar}
 					alt=""
 					className="rounded-full w-24 h-24 object-cover cursor-pointer self-center mt-2"
 				/>
@@ -132,7 +147,7 @@ function Profile() {
 				</p>
 				<input
 					id="username"
-					defaultValue={currentUser.username}
+					defaultValue={currentUser?.username}
 					type="text"
 					placeholder="username"
 					className="border p-3 rounded-lg"
@@ -142,7 +157,7 @@ function Profile() {
 					id="email"
 					type="email"
 					placeholder="email"
-					defaultValue={currentUser.email}
+					defaultValue={currentUser?.email}
 					className="border p-3 rounded-lg"
 					onChange={handleChange}
 				/>
@@ -160,7 +175,11 @@ function Profile() {
 				</button>
 			</form>
 			<div className="flex justify-between mt-5">
-				<span className="text-red-700 cursor-pointer">Delete Account</span>
+				<span
+					onClick={handleDeleteUser}
+					className="text-red-700 cursor-pointer">
+					Delete Account
+				</span>
 				<span className="text-red-700 cursor-pointer">Sign out</span>
 			</div>
 			<p className="text-red-700 mt-5">{error ? error : ""}</p>
