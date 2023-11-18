@@ -169,6 +169,22 @@ function Profile() {
 			console.log(err.message);
 		}
 	}
+	async function handleUpdateListing(listingId) {
+		try {
+			const res = await fetch(`/api/listing/update/${listingId}`, {
+				method: "POST",
+				headers: {"Content-Type": "application/json"},
+				body: JSON.stringify(formData),
+			});
+			const data = await res.json();
+			if (data.success === false) {
+				console.log(data.message);
+				return;
+			}
+		} catch (err) {
+			console.log(err.message);
+		}
+	}
 	return (
 		<div className="p-3 max-w-lg mx-auto">
 			<h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
@@ -281,7 +297,11 @@ function Profile() {
 									className="text-red-700">
 									Delete
 								</button>
-								<button className="text-green-700">Edit</button>
+								<button
+									onClick={() => handleUpdateListing(listing._id)}
+									className="text-green-700">
+									Edit
+								</button>
 							</div>
 						</div>
 					))}
