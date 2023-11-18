@@ -138,9 +138,11 @@ function CreateListing() {
 				}),
 			});
 			const data = await res.json();
+			console.log(data);
 			setLoading(false);
 			if (data.success === false) {
 				setError(data.message);
+				return;
 			}
 
 			navigate(`/listing/${data._id} `);
@@ -149,7 +151,7 @@ function CreateListing() {
 			setLoading(false);
 		}
 	}
-	console.log(formData);
+
 	return (
 		<main className="p-3 max-w-4xl mx-auto ">
 			<h1 className="text-3xl font-semibold text-center my-7">
@@ -287,7 +289,7 @@ function CreateListing() {
 						<div className="flex items-enter gap-2">
 							<input
 								onChange={handleChange}
-								value={formData.discountPrice || ""}
+								value={formData.discountPrice || 0}
 								type="number"
 								id="discountPrice"
 								placeholder="0"
