@@ -11,6 +11,7 @@ import OAuth from "../components/OAuth";
 function SignIn() {
 	const navigate = useNavigate();
 	const [formData, setFormData] = useState({});
+
 	const {isLoading, error} = useSelector((state) => state.user);
 	const dispatch = useDispatch();
 	function handleChange(e) {
@@ -79,7 +80,11 @@ function SignIn() {
 				</Link>
 			</div>
 
-			{error && <p className="text-red-500 mt-5">{error}</p>}
+			{error && (
+				<p className="text-red-500 mt-5">
+					{"Something went wrong. Please check your credentials and try again."}
+				</p>
+			)}
 		</div>
 	);
 }
