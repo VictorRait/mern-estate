@@ -41,7 +41,7 @@ function Contact({listing}) {
 							onChange={onChange}></textarea>
 					</div>
 					<Link
-						className="bg-slate-700 text-white text-center uppercase rounded-lg hover:opacity-95"
+						className="bg-slate-700 py-2 text-white text-center uppercase rounded-lg hover:opacity-95"
 						to={`mailto:${landlord.email}?subject=Regarding ${listing.name}&body=${message}`}>
 						Send Message
 					</Link>
