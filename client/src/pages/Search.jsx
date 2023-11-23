@@ -15,6 +15,7 @@ function Search() {
 	});
 	const [loading, setLoading] = useState(false);
 	const [listing, setListings] = useState([]);
+	const [showMore, setShowMore] = useState(false);
 	useEffect(() => {
 		const urlParams = new URLSearchParams(location.search);
 		const searchTermFromUrl = urlParams.get("searchTerm");
@@ -45,18 +46,23 @@ function Search() {
 		}
 		const fetchListings = async () => {
 			try {
+				setShowMore(false);
 				setLoading(true);
 				const searchQuery = urlParams.toString();
 				const res = await fetch(`/api/listing/get?${searchQuery}`);
 				const data = await res.json();
-
+				if (data.length > 8) {
+					setShowMore(true);
+				} else {
+					setShowMore(false);
+				}
 				if (!res.ok) {
 					setLoading(false);
 					throw new Error("There was a problem getting the listings");
 				}
 
 				setListings(data);
-				console.log(listing);
+
 				setLoading(false);
 			} catch (error) {
 				setLoading(false);
@@ -104,6 +110,19 @@ function Search() {
 		urlParams.set("sort", sidebardata.sort);
 		const searchQuery = urlParams.toString();
 		navigate(`/search?${searchQuery}`);
+	}
+	async function handleShowMore() {
+		const numOfListings = listing.length;
+		const startIndex = numOfListings;
+		const urlParams = new URLSearchParams(location.search);
+		urlParams.set("startIndex", startIndex);
+		const searchQuery = urlParams.toString();
+		const res = await fetch(`/api/listing/get?${searchQuery}`);
+		const data = await res.json();
+		if (data.length < 9) {
+			setShowMore(false);
+		}
+		setListings([...listing, ...data]);
 	}
 	return (
 		<div className="flex flex-col md:flex-row">
@@ -214,7 +233,7 @@ function Search() {
 				<h1 className="text-3xl font-semibold border-b p-3 text-slate-700 mt-5">
 					Listing results:
 				</h1>
-				<div className="flex justify-center items-center ">
+				<div className="flex flex-col text-left  ">
 					{!loading && listing.length === 0 ? (
 						<p className="text-xl text-slate-700">{"No listing found..."}</p>
 					) : loading ? (
@@ -222,11 +241,20 @@ function Search() {
 							{"Loading..."}
 						</p>
 					) : (
-						<div className=" flex gap-4 pt-7 flex-wrap ">
-							{listing.map((list, index) => (
-								<ListingItem key={index} listing={list} />
-							))}
-						</div>
+						<>
+							<div className=" flex gap-4 pt-7 flex-wrap ">
+								{listing.map((list, index) => (
+									<ListingItem key={index} listing={list} />
+								))}
+							</div>
+							{showMore && (
+								<button
+									onClick={handleShowMore}
+									className="text-green-700 hover:underline p-7">
+									Show more
+								</button>
+							)}
+						</>
 					)}
 				</div>
 			</div>
