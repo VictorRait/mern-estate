@@ -25,8 +25,6 @@ app.listen(3000, () => {
 	console.log("Server is running on port 3000");
 });
 
-app.get("/", (req, res) => {});
-
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/listing", listingRouter);
