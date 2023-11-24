@@ -8,7 +8,7 @@ export default defineConfig({
 	server: {
 		proxy: {
 			"/api": {
-				target: `http://localhost:${import.meta.env.PORT}`,
+				target: `http://localhost:3000`,
 				secure: true,
 			},
 		},
