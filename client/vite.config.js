@@ -1,12 +1,14 @@
 import {defineConfig} from "vite";
 import react from "@vitejs/plugin-react-swc";
+import dotenv from "dotenv";
 
-// https://vitejs.dev/config/
+dotenv.config();
+
 export default defineConfig({
 	server: {
 		proxy: {
 			"/api": {
-				target: "https://mern-estate-x8am.onrender.com/",
+				target: `http://localhost:${import.meta.env.VITE_PORT}`,
 				secure: true,
 			},
 		},
