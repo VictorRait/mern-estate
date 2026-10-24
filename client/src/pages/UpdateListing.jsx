@@ -46,7 +46,7 @@ function UpdateListing() {
 	);
 
 	function handleImageSubmit() {
-		if (files?.length > 0 && files.length < 7 + formData.imageUrls.length < 7) {
+		if (files?.length > 0 && files.length + formData.imageUrls.length < 7) {
 			setUploading(true);
 			setImageUploadError(false);
 			const promises = [];
@@ -63,8 +63,11 @@ function UpdateListing() {
 					setImageUploadError(false);
 					setUploading(false);
 				})
-				.catch(() => {
-					setImageUploadError("Image upload failed (2mb max per image)");
+				.catch((err) => {
+					console.error("Appwrite upload error", err);
+					setImageUploadError(
+						err.message || "Image upload failed (2mb max per image)",
+					);
 					setUploading(false);
 				});
 		} else {
