@@ -28,7 +28,7 @@ function CreateListing() {
 	const navigate = useNavigate();
 
 	function handleImageSubmit() {
-		if (files?.length > 0 && files.length < 7 + formData.imageUrls.length < 7) {
+		if (files?.length > 0 && files.length + formData.imageUrls.length < 7) {
 			setUploading(true);
 			setImageUploadError(false);
 			const promises = [];
@@ -45,8 +45,10 @@ function CreateListing() {
 					setImageUploadError(false);
 					setUploading(false);
 				})
-				.catch(() => {
-					setImageUploadError("Image upload failed (2mb max per image)");
+				.catch((err) => {
+					setImageUploadError(
+						err.message || "Image upload failed (2mb max per image)",
+					);
 					setUploading(false);
 				});
 		} else {
@@ -62,11 +64,13 @@ function CreateListing() {
 			onProgress: (e) => console.log(`Upload is ${e.progress}% done`),
 		});
 
-		return storage.getFileView({
+		const fileUrl = storage.getFileView({
 			bucketId: BUCKET_ID,
 			fileId: uploadedFile.$id,
 		});
+		return fileUrl.href || fileUrl;
 	}
+
 	function handleRemoveImage(index) {
 		setFormData({
 			...formData,
@@ -329,6 +333,7 @@ function CreateListing() {
 									alt='listing image'
 									className='w-20 h-20 object-contain rounded-lg'
 								/>
+
 								<button
 									type='button'
 									onClick={() => handleRemoveImage(index)}
